@@ -1,0 +1,146 @@
+---
+import { Picture } from "astro:assets";
+import roundBoxesSix from "../assets/photos/round-boxes-six.jpg";
+import { business, terms } from "../data/site";
+import { formatPrice } from "../lib/format";
+
+const options = [
+  {
+    title: "Самовывоз",
+    note: `${business.pickupAddress}, ${business.metro}`,
+    price: "бесплатно",
+  },
+  {
+    title: "Доставка по району Аэропорт",
+    note: `при заказе от ${formatPrice(terms.freeDeliveryFrom)}`,
+    price: "бесплатно",
+  },
+  {
+    title: "Доставка по Москве",
+    note: "в пределах МКАД",
+    price: formatPrice(terms.deliveryInsideMkad),
+  },
+];
+---
+
+<section class="section" id="delivery" aria-labelledby="delivery-title">
+  <div class="container delivery">
+    <div>
+      <div class="section-head">
+        <p class="eyebrow">Доставка и оплата</p>
+        <h2 id="delivery-title">Заберите сами или привезу</h2>
+      </div>
+      <ul class="options">
+        {options.map((option) => (
+          <li class="options__row">
+            <div>
+              <h3>{option.title}</h3>
+              <p>{option.note}</p>
+            </div>
+            <p class="options__price">{option.price}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="payment">
+        Предоплата {terms.prepayment}, остаток — перед отправкой, когда пришлю фото готового набора,
+        или при самовывозе.
+      </p>
+    </div>
+
+    <aside class="bulk reveal" aria-labelledby="bulk-title">
+      <Picture
+        class="bulk__photo"
+        src={roundBoxesSix}
+        alt="Шесть круглых коробок с разноцветными зефирными тюльпанами"
+        formats={["avif", "webp"]}
+        widths={[360, 540, 630]}
+        sizes="(min-width: 56rem) 26rem, calc(100vw - 2rem)"
+      />
+      <div class="bulk__body">
+        <h3 id="bulk-title">
+          От {terms.bulkBoxes} коробок — скидка {terms.bulkDiscount}
+        </h3>
+        <p>Удобно, когда нужно поздравить весь коллектив или всех учителей сразу.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .delivery {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .options {
+    display: grid;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .options__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .options__row h3 {
+    font-size: 1.45rem;
+  }
+
+  .options__row p {
+    color: var(--ink-soft);
+  }
+
+  .options__price {
+    flex: none;
+    font-weight: 600;
+  }
+
+  .options__row .options__price {
+    color: var(--ink);
+  }
+
+  .payment {
+    margin-top: 1.5rem;
+    color: var(--ink-soft);
+  }
+
+  .bulk {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .bulk :global(picture) {
+    display: block;
+  }
+
+  .bulk :global(.bulk__photo) {
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+  }
+
+  .bulk__body {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.4rem 1.5rem 1.6rem;
+  }
+
+  .bulk__body p {
+    color: var(--ink-soft);
+  }
+
+  @media (width >= 56rem) {
+    .delivery {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+</style>

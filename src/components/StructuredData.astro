@@ -1,0 +1,65 @@
+---
+// Разметка Schema.org для Яндекса и Google: кондитерская, район, контакты и наборы с ценами.
+import { getImage } from "astro:assets";
+import { products } from "../data/products";
+import { business, contacts } from "../data/site";
+import { formatPrice } from "../lib/format";
+import { telegramProfileUrl } from "../lib/links";
+
+interface Props {
+  description: string;
+}
+
+const { description } = Astro.props;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const absolute = (path: string) => new URL(path, site).href;
+
+const prices = products.map((product) => product.price);
+const priceRange = `${formatPrice(Math.min(...prices))}–${formatPrice(Math.max(...prices))}`;
+
+const offers = await Promise.all(
+  products.map(async (product) => {
+    const image = await getImage({ src: product.photo, width: 720, format: "jpg" });
+    return {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "RUB",
+      availability: "https://schema.org/PreOrder",
+      itemOffered: {
+        "@type": "Product",
+        name: `${product.name}, ${product.size}`,
+        description: product.description,
+        image: absolute(image.src),
+      },
+    };
+  }),
+);
+
+const data = {
+  "@context": "https://schema.org",
+  "@type": "Bakery",
+  "@id": absolute("/#bakery"),
+  name: `${business.name} — ${business.tagline}`,
+  description,
+  url: absolute("/"),
+  image: absolute("/og.jpg"),
+  telephone: contacts.phone,
+  priceRange,
+  currenciesAccepted: "RUB",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: business.pickupAddress,
+    addressLocality: business.city,
+    addressCountry: "RU",
+  },
+  areaServed: { "@type": "City", name: business.city },
+  sameAs: [telegramProfileUrl],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Наборы зефирных цветов",
+    itemListElement: offers,
+  },
+};
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(data)} />

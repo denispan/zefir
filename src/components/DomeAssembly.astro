@@ -1,0 +1,333 @@
+---
+// Тюльпаны под куполом, вид сбоку. Пока блок прокручивается в кадр, бутоны слетаются
+// на подставку, сверху опускается купол и завязывается бант. Работает на CSS
+// scroll-driven animations; где их нет, картинка просто показана собранной.
+
+type Shade = "pink" | "peach" | "yellow" | "lilac" | "white";
+
+interface Part {
+  x: number;
+  y: number;
+  scale: number;
+  from: number;
+  to: number;
+}
+
+interface Bud extends Part {
+  shade: Shade;
+  dx: number;
+  dy: number;
+  turn: number;
+}
+
+interface Leaf extends Part {
+  angle: number;
+  /** Отразить лист, чтобы он клонился влево. */
+  flip: boolean;
+}
+
+const leaves: Leaf[] = [
+  { x: 116, y: 410, scale: 1.5, angle: -4, flip: true, from: 4, to: 18 },
+  { x: 304, y: 410, scale: 1.5, angle: 4, flip: false, from: 6, to: 20 },
+  { x: 178, y: 396, scale: 1.3, angle: -14, flip: true, from: 8, to: 22 },
+  { x: 244, y: 396, scale: 1.3, angle: 14, flip: false, from: 10, to: 24 },
+];
+
+const buds: Bud[] = [
+  { x: 176, y: 394, scale: 1.28, shade: "yellow", dx: -260, dy: -220, turn: -40, from: 8, to: 24 },
+  { x: 246, y: 394, scale: 1.28, shade: "pink", dx: 260, dy: -240, turn: 40, from: 11, to: 27 },
+  { x: 211, y: 388, scale: 1.3, shade: "white", dx: 30, dy: -320, turn: 20, from: 14, to: 30 },
+  { x: 144, y: 414, scale: 1.36, shade: "peach", dx: -300, dy: -40, turn: -30, from: 17, to: 33 },
+  { x: 276, y: 414, scale: 1.36, shade: "lilac", dx: 300, dy: -60, turn: 30, from: 20, to: 36 },
+  { x: 210, y: 420, scale: 1.4, shade: "pink", dx: -20, dy: -340, turn: -15, from: 23, to: 39 },
+];
+
+function leafTransform(leaf: Leaf) {
+  const scaleX = leaf.flip ? -leaf.scale : leaf.scale;
+  return `translate(${leaf.x} ${leaf.y}) rotate(${leaf.angle}) scale(${scaleX} ${leaf.scale})`;
+}
+
+const timing = (part: Part) => `--from:${part.from}%;--to:${part.to}%`;
+---
+
+<figure class="assembly">
+  <svg viewBox="0 120 420 370" role="img" aria-labelledby="assembly-title">
+    <title id="assembly-title">Зефирные тюльпаны под прозрачным куполом с лентой</title>
+    <defs>
+      <linearGradient id="bud-pink" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0.1" stop-color="#fff4f5"></stop>
+        <stop offset="0.55" stop-color="#f7c6d2"></stop>
+        <stop offset="1" stop-color="#e98aa4"></stop>
+      </linearGradient>
+      <linearGradient id="bud-peach" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0.1" stop-color="#fff3e8"></stop>
+        <stop offset="0.55" stop-color="#f9cfb3"></stop>
+        <stop offset="1" stop-color="#ef9f72"></stop>
+      </linearGradient>
+      <linearGradient id="bud-yellow" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0.1" stop-color="#fff9e2"></stop>
+        <stop offset="0.55" stop-color="#f8e2a0"></stop>
+        <stop offset="1" stop-color="#eec04c"></stop>
+      </linearGradient>
+      <linearGradient id="bud-lilac" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0.1" stop-color="#f9f2fb"></stop>
+        <stop offset="0.55" stop-color="#dcc6e8"></stop>
+        <stop offset="1" stop-color="#ae86cb"></stop>
+      </linearGradient>
+      <linearGradient id="bud-white" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="#e3edd9"></stop>
+        <stop offset="0.45" stop-color="#ffffff"></stop>
+        <stop offset="1" stop-color="#fbf6f0"></stop>
+      </linearGradient>
+      <linearGradient id="plate-top" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f1dcb4"></stop>
+        <stop offset="1" stop-color="#d8b07a"></stop>
+      </linearGradient>
+      <linearGradient id="plate-side" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#c79d63"></stop>
+        <stop offset="0.45" stop-color="#e6c690"></stop>
+        <stop offset="1" stop-color="#bf945a"></stop>
+      </linearGradient>
+      <g id="bud-side">
+        <path
+          class="b-side"
+          d="M-2 2C-26 0-42-22-40-52-38-78-26-98-12-110-14-84-10-40-2 2ZM2 2C26 0 42-22 40-52 38-78 26-98 12-110 14-84 10-40 2 2Z"
+        ></path>
+        <path class="b-ridge" d="M-24-8C-32-34-30-66-20-94M24-8C32-34 30-66 20-94"></path>
+        <path
+          class="b-front"
+          d="M0 4C-20 4-30-18-28-48-26-76-14-96 0-108 14-96 26-76 28-48 30-18 20 4 0 4Z"
+        ></path>
+        <path class="b-ridge" d="M-12 0C-18-30-14-66-5-94M12 0C18-30 14-66 5-94M0 2V-100"></path>
+      </g>
+      <g id="leaf-side">
+        <path class="l-blade" d="M0 0C14-18 20-56 8-100 0-66-6-30 0 0Z"></path>
+        <path class="l-vein" d="M2-6C6-40 7-70 7-92"></path>
+      </g>
+    </defs>
+
+    <ellipse class="shadow" cx="210" cy="438" rx="150" ry="14"></ellipse>
+    <path class="plate-side" d="M70 404v16a140 26 0 0 0 280 0v-16Z"></path>
+    <ellipse class="plate-top" cx="210" cy="404" rx="140" ry="26"></ellipse>
+
+    {leaves.map((leaf) => (
+      <g class="part part--leaf" style={timing(leaf)}>
+        <use href="#leaf-side" transform={leafTransform(leaf)} />
+      </g>
+    ))}
+    {buds.map((bud) => (
+      <g
+        class="part part--bud"
+        style={`${timing(bud)};--dx:${bud.dx}px;--dy:${bud.dy}px;--turn:${bud.turn}deg`}
+      >
+        <use
+          href="#bud-side"
+          class={`shade-${bud.shade}`}
+          transform={`translate(${bud.x} ${bud.y}) scale(${bud.scale})`}
+        />
+      </g>
+    ))}
+
+    <g class="part part--dome" style="--from:34%;--to:45%">
+      <path class="dome" d="M80 404V262C80 192 138 146 210 146S340 192 340 262V404"></path>
+      <ellipse class="dome__rim" cx="210" cy="404" rx="130" ry="22"></ellipse>
+      <path class="dome__shine" d="M104 386V270C104 218 128 186 162 170"></path>
+      <path class="dome__shine dome__shine--thin" d="M318 300C318 262 310 236 296 216"></path>
+    </g>
+
+    <g class="part part--bow" style="--from:43%;--to:50%">
+      <path
+        class="bow"
+        d="M206 430C198 446 186 460 170 470l16 4c10-12 18-26 24-42ZM214 430c8 16 20 30 36 40l-16 4c-10-12-18-26-24-42Z"
+      ></path>
+      <path
+        class="bow"
+        d="M210 428C190 404 150 402 152 424s36 16 58 4ZM210 428c20-24 60-26 58-4s-36 16-58 4Z"
+      ></path>
+      <ellipse class="bow" cx="210" cy="429" rx="9" ry="8"></ellipse>
+    </g>
+  </svg>
+</figure>
+
+<style>
+  .assembly {
+    width: min(100%, 26rem);
+    margin: 0 auto;
+    view-timeline: --assembly block;
+  }
+
+  .assembly svg {
+    overflow: visible;
+  }
+
+  .shadow {
+    fill: rgb(58 46 42 / 9%);
+  }
+
+  .plate-top {
+    fill: url("#plate-top");
+  }
+
+  .plate-side {
+    fill: url("#plate-side");
+  }
+
+  .l-blade {
+    fill: #a9bea1;
+    stroke: #93aa8b;
+    stroke-width: 1;
+  }
+
+  .l-vein {
+    fill: none;
+    stroke: #c9d8c1;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+  }
+
+  .b-side {
+    fill: var(--bud);
+    stroke: var(--edge);
+    stroke-width: 1.3;
+  }
+
+  .b-front {
+    fill: var(--bud);
+    stroke: var(--edge);
+    stroke-width: 1.3;
+  }
+
+  .b-ridge {
+    fill: none;
+    stroke: var(--ridge);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    opacity: 0.8;
+  }
+
+  .shade-pink {
+    --bud: url("#bud-pink");
+    --edge: #d9798f;
+    --ridge: #efb2c1;
+  }
+
+  .shade-peach {
+    --bud: url("#bud-peach");
+    --edge: #df8f67;
+    --ridge: #f4c4a8;
+  }
+
+  .shade-yellow {
+    --bud: url("#bud-yellow");
+    --edge: #d7aa3c;
+    --ridge: #f1d88e;
+  }
+
+  .shade-lilac {
+    --bud: url("#bud-lilac");
+    --edge: #9f7fb8;
+    --ridge: #d3bde0;
+  }
+
+  .shade-white {
+    --bud: url("#bud-white");
+    --edge: #cfc3b5;
+    --ridge: #ebe2d8;
+  }
+
+  .dome {
+    fill: rgb(255 255 255 / 8%);
+    stroke: rgb(140 118 128 / 45%);
+    stroke-width: 2;
+  }
+
+  .dome__rim {
+    fill: none;
+    stroke: rgb(140 118 128 / 30%);
+    stroke-width: 2;
+  }
+
+  .dome__shine {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 7;
+    stroke-linecap: round;
+    opacity: 0.8;
+  }
+
+  .dome__shine--thin {
+    stroke-width: 4;
+    opacity: 0.55;
+  }
+
+  .bow {
+    fill: #e8cb9d;
+    stroke: #cfa771;
+    stroke-width: 1.2;
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      /* Только длинные свойства: сокращённое animation сбрасывает animation-timeline,
+         а минификатор склеивает их в запись, которую браузеры не понимают. */
+      .part {
+        transform-box: fill-box;
+        transform-origin: 50% 100%;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --assembly;
+        animation-range: cover var(--from) cover var(--to);
+      }
+
+      .part--leaf {
+        animation-name: leaf-grow;
+      }
+
+      .part--bud {
+        transform-origin: center;
+        animation-name: bud-fly;
+      }
+
+      .part--dome {
+        animation-name: dome-lower;
+      }
+
+      .part--bow {
+        transform-origin: center;
+        animation-name: bow-tie;
+      }
+    }
+  }
+
+  @keyframes leaf-grow {
+    from {
+      opacity: 0;
+      transform: scale(0.2);
+    }
+  }
+
+  @keyframes bud-fly {
+    from {
+      opacity: 0;
+      transform: translate(var(--dx), var(--dy)) rotate(var(--turn)) scale(0.7);
+    }
+
+    40% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes dome-lower {
+    from {
+      opacity: 0;
+      transform: translateY(-9rem);
+    }
+  }
+
+  @keyframes bow-tie {
+    from {
+      opacity: 0;
+      transform: scale(0.3) rotate(-20deg);
+    }
+  }
+</style>

@@ -1,0 +1,82 @@
+---
+import DomeAssembly from "./DomeAssembly.astro";
+
+const benefits = [
+  {
+    title: "На яблочном пюре, а не на соке",
+    text: "Поэтому у зефира насыщенный яблочный вкус, а не просто сладость.",
+  },
+  {
+    title: "Заварная технология",
+    text: "Нежная воздушная текстура, а лепестки держат форму.",
+  },
+  {
+    title: "Любые оттенки",
+    text: "Можно совсем белые тюльпаны с чуть зелёными листиками — если вы против красителей.",
+  },
+  {
+    title: "Открытка в подарок",
+    text: "К каждому набору — открытка с пожеланием. А для вас положу тюльпан на пробу.",
+  },
+  {
+    title: "Домашняя кухня",
+    text: "Готовлю сама, дома. Домашних животных нет.",
+  },
+];
+---
+
+<section class="section" id="about" aria-labelledby="about-title">
+  <div class="container benefits">
+    <DomeAssembly />
+    <div>
+      <div class="section-head">
+        <p class="eyebrow">Почему это вкусно</p>
+        <h2 id="about-title">Каждый букет собираю вручную</h2>
+      </div>
+      <ul class="benefits__list">
+        {benefits.map((benefit) => (
+          <li class="reveal">
+            <h3>{benefit.title}</h3>
+            <p>{benefit.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .benefits {
+    display: grid;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .benefits__list {
+    display: grid;
+    gap: 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .benefits__list li {
+    display: grid;
+    gap: 0.35rem;
+    padding-left: 1.25rem;
+    border-left: 2px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  }
+
+  .benefits__list h3 {
+    font-size: 1.45rem;
+  }
+
+  .benefits__list p {
+    color: var(--ink-soft);
+  }
+
+  @media (width >= 56rem) {
+    .benefits {
+      grid-template-columns: 1fr 1.1fr;
+    }
+  }
+</style>

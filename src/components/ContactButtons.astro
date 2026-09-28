@@ -1,0 +1,50 @@
+---
+import { contacts } from "../data/site";
+import { phoneUrl, telegramUrl, whatsappUrl } from "../lib/links";
+import Icon from "./Icon.astro";
+
+interface Props {
+  /** Показать ещё телефон и MAX — для финального блока «Контакты». */
+  full?: boolean;
+}
+
+const { full = false } = Astro.props;
+const maxUrl = contacts.maxProfileUrl;
+---
+
+<div class="contact-buttons">
+  <a class="button button--primary" href={telegramUrl()} target="_blank" rel="noopener">
+    <Icon name="telegram" />
+    Написать в Telegram
+  </a>
+  <a class="button button--ghost" href={whatsappUrl()} target="_blank" rel="noopener">
+    <Icon name="whatsapp" />
+    WhatsApp
+  </a>
+  {full && maxUrl && (
+    <a class="button button--ghost" href={maxUrl} target="_blank" rel="noopener">
+      <Icon name="chat" />
+      MAX
+    </a>
+  )}
+  {full && (
+    <a class="button button--ghost" href={phoneUrl}>
+      <Icon name="phone" />
+      {contacts.phone}
+    </a>
+  )}
+</div>
+
+<style>
+  .contact-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  @media (width < 30rem) {
+    .contact-buttons .button {
+      flex: 1 1 100%;
+    }
+  }
+</style>

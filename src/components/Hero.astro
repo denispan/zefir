@@ -1,0 +1,106 @@
+---
+import { announcement, business, terms } from "../data/site";
+import { products } from "../data/products";
+import { activeAnnouncement } from "../lib/announcement";
+import { formatPrice } from "../lib/format";
+import BouquetBox from "./BouquetBox.astro";
+import ContactButtons from "./ContactButtons.astro";
+
+const note = activeAnnouncement(announcement);
+const lowestPrice = Math.min(...products.map((product) => product.price));
+---
+
+<section class="hero">
+  <div class="container hero__inner">
+    <div class="hero__art">
+      <BouquetBox />
+    </div>
+    <div class="hero__text">
+      {note && <p class="hero__note">{note.text}</p>}
+      <p class="eyebrow">
+        {business.city} · {business.metro}
+      </p>
+      <h1>Зефирные тюльпаны ручной работы в Москве</h1>
+      <p class="lead hero__lead">
+        Букет, который можно съесть. Готовлю заварной зефир на яблочном пюре, а не на соке, —
+        поэтому вкус у него насыщенный, а не просто сладкий.
+      </p>
+      <ContactButtons />
+      <ul class="hero__facts">
+        <li>
+          <strong>от {formatPrice(lowestPrice)}</strong> за набор
+        </li>
+        <li>
+          <strong>{terms.leadTime}</strong> на заказ
+        </li>
+        <li>
+          <strong>открытка</strong> в подарок
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(2rem, 6vw, 5rem) clamp(4rem, 9vw, 6.5rem);
+    /* Цветы влетают из-за края, а вращающаяся коробка шире своего блока — прячем это, без полосы прокрутки. */
+    overflow-x: clip;
+  }
+
+  .hero__inner {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  .hero__art {
+    width: min(78vw, 22rem);
+    margin-inline: auto;
+  }
+
+  .hero__text {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+
+  .hero__note {
+    padding: 0.45rem 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+    border-radius: 1.25rem;
+    background: var(--surface);
+    color: var(--accent-strong);
+    font-size: clamp(0.8rem, 3.4vw, 0.9rem);
+    font-weight: 600;
+  }
+
+  .hero__lead {
+    max-width: 34rem;
+  }
+
+  .hero__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    padding: 0;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    list-style: none;
+  }
+
+  .hero__facts strong {
+    color: var(--ink);
+  }
+
+  @media (width >= 56rem) {
+    .hero__inner {
+      grid-template-columns: 1.1fr 1fr;
+    }
+
+    .hero__art {
+      order: 2;
+      width: 100%;
+    }
+  }
+</style>

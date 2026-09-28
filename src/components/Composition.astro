@@ -1,0 +1,50 @@
+---
+import { terms } from "../data/site";
+---
+
+<section class="section section--tint" id="composition" aria-labelledby="composition-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Состав и хранение</p>
+      <h2 id="composition-title">Ничего лишнего</h2>
+    </div>
+    <div class="facts">
+      <div class="facts__card reveal">
+        <h3>Состав</h3>
+        <p>
+          Сахар, яблочное пюре, инвертный сироп (сахар, вода, лимонная кислота, сода), агар-агар,
+          ванилин, пищевой краситель.
+        </p>
+        <p class="facts__note">В грибочках — ещё глазурь из молочного шоколада.</p>
+      </div>
+      <div class="facts__card reveal">
+        <h3>Хранение</h3>
+        <p>
+          {terms.shelfLife} при температуре от +6 до +25 °C, в тёмном месте, в закрытом контейнере.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1.25rem;
+  }
+
+  .facts__card {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .facts__note {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+</style>

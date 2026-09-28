@@ -1,0 +1,34 @@
+---
+import { products } from "../data/products";
+import ProductCard from "./ProductCard.astro";
+---
+
+<section class="section section--tint" id="catalog" aria-labelledby="catalog-title">
+  <div class="container">
+    <div class="section-head section-head--center">
+      <p class="eyebrow">Наборы и цены</p>
+      <h2 id="catalog-title">Выберите коробку — цвета подберём вместе</h2>
+      <p class="lead">
+        Количество тюльпанов и оттенки — на ваш выбор. К каждому набору кладу открытку с пожеланием.
+      </p>
+    </div>
+    <div class="catalog">
+      {products.map((product) => (
+        <ProductCard product={product} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .catalog {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .catalog > :global(*) {
+    flex: 0 1 21rem;
+  }
+</style>
