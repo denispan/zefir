@@ -1,0 +1,23 @@
+---
+interface Props {
+  value: number;
+}
+
+const MAX_RATING = 5;
+const { value } = Astro.props;
+---
+
+<p class="rating">
+  <span aria-hidden="true">{"★".repeat(value)}</span>
+  <span class="visually-hidden">
+    Оценка {value} из {MAX_RATING}
+  </span>
+</p>
+
+<style>
+  .rating {
+    color: var(--gold);
+    font-size: 1.05rem;
+    letter-spacing: 0.15em;
+  }
+</style>

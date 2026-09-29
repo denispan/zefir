@@ -119,7 +119,8 @@ section[id] {
   overflow: clip;
 }
 
-.section--tint {
+/* Секции главной чередуют фон сами — порядок блоков можно менять, не трогая классы. */
+main > :nth-child(even) {
   background: var(--tint);
 }
 

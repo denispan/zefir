@@ -21,6 +21,8 @@ export const contacts = {
   // Ссылку на профиль в MAX можно взять в приложении: Настройки → QR-код → «Поделиться».
   // Пока её нет, MAX показывается номером телефона.
   maxProfileUrl: "",
+  // Профиль на Авито: если заполнить, под отзывами появится кнопка «Все отзывы на Авито».
+  avitoProfileUrl: "",
 } as const;
 
 export const announcement: Announcement | null = {

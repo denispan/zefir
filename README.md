@@ -25,6 +25,7 @@ npm run format    # prettier
 | Что                                      | Где                                              |
 | ---------------------------------------- | ------------------------------------------------ |
 | Наборы, цены, описания, фото             | `src/data/products.ts`                           |
+| Отзывы                                   | `src/data/reviews.ts`                            |
 | Телефон, Telegram, WhatsApp, MAX         | `src/data/site.ts` → `contacts`                  |
 | Анонс к празднику                        | `src/data/site.ts` → `announcement`              |
 | Сроки, предоплата, доставка, скидка      | `src/data/site.ts` → `terms`                     |

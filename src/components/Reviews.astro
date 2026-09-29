@@ -1,0 +1,172 @@
+---
+import { reviews } from "../data/reviews";
+import { contacts } from "../data/site";
+import { formatDate } from "../lib/format";
+import Avatar from "./Avatar.astro";
+import Rating from "./Rating.astro";
+
+const featured = reviews.find((review) => review.featured);
+const others = reviews.filter((review) => review !== featured);
+const avitoUrl = contacts.avitoProfileUrl;
+---
+
+<section class="section" id="reviews" aria-labelledby="reviews-title">
+  <div class="container">
+    <div class="section-head section-head--center">
+      <p class="eyebrow">Отзывы</p>
+      <h2 id="reviews-title">Что пишут после заказа</h2>
+      <p class="lead">Отзывы покупателей с Авито — все после состоявшихся сделок.</p>
+    </div>
+
+    {featured && (
+      <figure class="featured reveal">
+        <Rating value={featured.rating} />
+        <blockquote class="featured__text">
+          <p>{featured.text}</p>
+        </blockquote>
+        <figcaption class="person">
+          <Avatar name={featured.author} index={reviews.indexOf(featured)} />
+          <span class="person__text">
+            <span class="person__name">{featured.author}</span>
+            <time datetime={featured.date}>{formatDate(featured.date)}</time>
+          </span>
+        </figcaption>
+      </figure>
+    )}
+
+    <div class="reviews">
+      {others.map((review) => (
+        <figure class="review reveal">
+          <Rating value={review.rating} />
+          <blockquote class="review__text">
+            <p>{review.text}</p>
+          </blockquote>
+          <figcaption class="person review__person">
+            <Avatar name={review.author} index={reviews.indexOf(review)} />
+            <span class="person__text">
+              <span class="person__name">{review.author}</span>
+              <time datetime={review.date}>{formatDate(review.date)}</time>
+            </span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+
+    {avitoUrl && (
+      <p class="more">
+        <a class="button button--ghost" href={avitoUrl} target="_blank" rel="noopener">
+          Все отзывы на Авито
+        </a>
+      </p>
+    )}
+  </div>
+</section>
+
+<style>
+  .featured {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+    max-width: 46rem;
+    margin: 0 auto clamp(2.5rem, 6vw, 4rem);
+    text-align: center;
+  }
+
+  .featured__text {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 3.6vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  .featured__text p::before {
+    content: "«";
+  }
+
+  .featured__text p::after {
+    content: "»";
+  }
+
+  .person {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
+  .person__text {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .person__name {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* 1, 2 или 3 колонки. Последний отзыв в неполной строке растягивается,
+     чтобы сетка не заканчивалась одинокой карточкой. */
+  .reviews {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (width >= 36rem) {
+    .reviews {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .review:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .reviews {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .review:last-child:nth-child(odd) {
+      grid-column: auto;
+    }
+
+    .review:last-child:nth-child(3n + 1) {
+      grid-column: 1 / -1;
+    }
+
+    .review:last-child:nth-child(3n + 2) {
+      grid-column: span 2;
+    }
+  }
+
+  .review {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin: 0;
+    padding: 1.6rem 1.5rem 1.4rem;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .review__text {
+    flex: 1;
+    margin: 0;
+  }
+
+  .review__person {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .more {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+</style>
