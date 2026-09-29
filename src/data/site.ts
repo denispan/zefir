@@ -26,7 +26,7 @@ export const contacts = {
 } as const;
 
 export const announcement: Announcement | null = {
-  text: "Открыта запись к Дню учителя — 5 октября",
+  text: "Принимаю заказы ко Дню учителя — 5 октября",
   until: "2026-10-05",
 };
 

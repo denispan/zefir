@@ -27,8 +27,12 @@ const options = [
   <div class="container delivery">
     <div>
       <div class="section-head">
-        <p class="eyebrow">Доставка и оплата</p>
+        <p class="eyebrow">Заказ и доставка</p>
         <h2 id="delivery-title">Заберите сами или привезу</h2>
+        <p class="lead">
+          Готовлю только под заказ, на это уходит {terms.leadTime}: зефиру нужно отлежаться, чтобы
+          лепестки окрепли. К празднику лучше писать заранее.
+        </p>
       </div>
       <ul class="options">
         {options.map((option) => (
@@ -42,8 +46,8 @@ const options = [
         ))}
       </ul>
       <p class="payment">
-        Предоплата {terms.prepayment}, остаток — перед отправкой, когда пришлю фото готового набора,
-        или при самовывозе.
+        Прошу предоплату {terms.prepayment} — после неё начинаю готовить. Готовый набор
+        сфотографирую и пришлю вам. Остаток можно оплатить перед отправкой или при самовывозе.
       </p>
     </div>
 

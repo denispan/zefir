@@ -22,8 +22,9 @@ const lowestPrice = Math.min(...products.map((product) => product.price));
       </p>
       <h1>Зефирные тюльпаны ручной работы в Москве</h1>
       <p class="lead hero__lead">
-        Букет, который можно съесть. Готовлю заварной зефир на яблочном пюре, а не на соке, —
-        поэтому вкус у него насыщенный, а не просто сладкий.
+        Букет, который можно съесть. Меня зовут Татьяна, я готовлю зефир дома и собираю из него
+        цветы. Вместо сока беру яблочное пюре — поэтому вкус получается яблочным, а не просто
+        сладким.
       </p>
       <ContactButtons />
       <ul class="hero__facts">
@@ -31,7 +32,7 @@ const lowestPrice = Math.min(...products.map((product) => product.price));
           <strong>от {formatPrice(lowestPrice)}</strong> за набор
         </li>
         <li>
-          <strong>{terms.leadTime}</strong> на заказ
+          готовлю <strong>{terms.leadTime}</strong>
         </li>
         <li>
           <strong>открытка</strong> в подарок

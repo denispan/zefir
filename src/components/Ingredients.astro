@@ -20,7 +20,7 @@ const LENGTH = 18;
 const FIRST = 6;
 ---
 
-<ul class="ingredients" aria-label="Из чего сделан зефир">
+<ul class="ingredients" aria-label="Ингредиенты">
   {ingredients.map(({ name, note, tone, Art }, index) => {
     const from = FIRST + index * STEP;
     const style = `--tone:${tone};--from:${from}%;--to:${from + LENGTH}%;--bob-delay:${index * -1.3}s`;
