@@ -1,0 +1,78 @@
+---
+// Горка из трёх кубиков сахара с мерцающими искорками.
+
+interface Cube {
+  x: number;
+  y: number;
+}
+
+// Верхняя точка центра каждого кубика; рисуем от дальнего к ближнему.
+const cubes: Cube[] = [
+  { x: 44, y: 70 },
+  { x: 78, y: 76 },
+  { x: 60, y: 42 },
+];
+const HALF = 22;
+const HEIGHT = 24;
+
+function faces({ x, y }: Cube) {
+  const top = y - HALF / 2;
+  const middle = y + HALF / 2;
+  return {
+    top: `${x},${top} ${x + HALF},${y} ${x},${middle} ${x - HALF},${y}`,
+    left: `${x - HALF},${y} ${x},${middle} ${x},${middle + HEIGHT} ${x - HALF},${y + HEIGHT}`,
+    right: `${x},${middle} ${x + HALF},${y} ${x + HALF},${y + HEIGHT} ${x},${middle + HEIGHT}`,
+  };
+}
+
+const sparkles = [
+  { x: 96, y: 36, delay: 0 },
+  { x: 24, y: 44, delay: 0.8 },
+  { x: 104, y: 62, delay: 1.6 },
+];
+const SPARKLE = "M0-7 1.6-1.6 7 0 1.6 1.6 0 7-1.6 1.6-7 0-1.6-1.6Z";
+---
+
+<svg viewBox="0 0 120 120" aria-hidden="true">
+  <g stroke="#e3d6c8" stroke-width="0.8" stroke-linejoin="round">
+    {cubes.map((cube) => {
+      const face = faces(cube);
+      return (
+        <g>
+          <polygon points={face.left} fill="#f2eae1" />
+          <polygon points={face.right} fill="#e6dacd" />
+          <polygon points={face.top} fill="#ffffff" />
+        </g>
+      );
+    })}
+  </g>
+  {sparkles.map((sparkle) => (
+    <g transform={`translate(${sparkle.x} ${sparkle.y})`}>
+      <path
+        class="sparkle"
+        style={`--delay:${sparkle.delay}s`}
+        d={SPARKLE}
+        fill="#fffaf0"
+        stroke="#e2bd72"
+        stroke-width="1"
+      />
+    </g>
+  ))}
+</svg>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .sparkle {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: twinkle 2.4s ease-in-out var(--delay) infinite;
+    }
+  }
+
+  @keyframes twinkle {
+    50% {
+      opacity: 0.25;
+      transform: scale(0.55) rotate(20deg);
+    }
+  }
+</style>
