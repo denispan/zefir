@@ -1,0 +1,226 @@
+:root {
+  --bg: #fbf7f2;
+  --surface: #ffffff;
+  --tint: #f7ecea;
+  --ink: #3a2e2a;
+  --ink-soft: #6e605a;
+  --line: #ecdfd6;
+  --accent: #a8455e;
+  --accent-strong: #8f384f;
+  --sage: #9fb49a;
+  --gold: #d9b27c;
+  --radius: 1.25rem;
+  --radius-lg: 1.75rem;
+  --shadow: 0 1px 2px rgb(58 46 42 / 6%), 0 18px 40px -24px rgb(58 46 42 / 35%);
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --container: 70rem;
+  --gutter: 1rem;
+  --header-height: 4rem;
+
+  color-scheme: light;
+}
+
+@media (width >= 40rem) {
+  :root {
+    --gutter: 2rem;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.6rem, 7.2vw, 4.6rem);
+}
+
+h2 {
+  font-size: clamp(2.1rem, 5vw, 3.2rem);
+}
+
+h3 {
+  font-size: 1.65rem;
+}
+
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  outline-offset: 3px;
+}
+
+section[id] {
+  scroll-margin-top: var(--header-height);
+}
+
+.container {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: clamp(4rem, 10vw, 7rem);
+  /* Анимированные элементы прилетают из-за краёв секции — не даём им залезать на соседние. */
+  overflow: clip;
+}
+
+/* Секции главной чередуют фон сами — порядок блоков можно менять, не трогая классы. */
+main > :nth-child(even) {
+  background: var(--tint);
+}
+
+.section-head {
+  display: grid;
+  gap: 1rem;
+  max-width: 38rem;
+  margin-bottom: clamp(2rem, 5vw, 3.25rem);
+}
+
+.section-head--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.lead {
+  color: var(--ink-soft);
+  font-size: 1.125rem;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.125rem;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font: 600 1rem/1.2 var(--font-body);
+  text-decoration: none;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button svg {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.button--primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.button--primary:hover {
+  background: var(--accent-strong);
+}
+
+.button--ghost {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.button--ghost:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Плавное появление блоков при прокрутке — только там, где браузер умеет scroll-driven animations.
+   Свойства анимации заданы по отдельности: сокращённое animation сбрасывает animation-timeline. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation-name: reveal;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(1.75rem);
+  }
+}

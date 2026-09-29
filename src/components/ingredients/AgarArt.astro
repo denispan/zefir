@@ -1,0 +1,58 @@
+---
+// Веточка красной водоросли, из которой получают агар-агар, и хлопья агара.
+// Водоросль покачивается, как под водой.
+
+const BRANCHES =
+  "M59 86c-11-6-17-14-19-26M41 64c-7-4-11-12-10-20M40 60c4-8 4-14 2-22M60 74c12-6 18-14 20-26M79 52c7-4 11-10 11-18M80 48c-4-6-4-12-2-18M58 46c-8-4-10-12-8-20M58 42c8-4 12-12 12-20M59 97c11-4 19-8 25-16M59 97c-11-2-19-6-25-12";
+const TIPS: [number, number][] = [
+  [58, 22],
+  [31, 44],
+  [42, 38],
+  [90, 34],
+  [78, 30],
+  [50, 26],
+  [70, 22],
+  [84, 81],
+  [34, 85],
+];
+---
+
+<svg viewBox="0 0 120 120" aria-hidden="true">
+  <g class="weed">
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="#d8667c" stroke-width="5" d="M60 108c-2-18 2-32-2-48-3-12 2-24 0-38"></path>
+      <path stroke="#e0788c" stroke-width="3.6" d={BRANCHES}></path>
+    </g>
+    <g fill="#f4adb9">
+      {TIPS.map(([x, y]) => (
+        <circle cx={x} cy={y} r="3.2" />
+      ))}
+    </g>
+  </g>
+  <g fill="#f6e6bd" stroke="#e5c889" stroke-width="1" stroke-linejoin="round">
+    <path d="M16 104l11-5 5 7-12 4Z"></path>
+    <path d="M86 108l13-3 2 7-13 2Z"></path>
+    <path d="M97 94l8-6 5 6-9 5Z"></path>
+  </g>
+</svg>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .weed {
+      transform-box: view-box;
+      transform-origin: 60px 108px;
+      animation: drift 5s ease-in-out infinite;
+    }
+  }
+
+  @keyframes drift {
+    0%,
+    100% {
+      transform: rotate(-3deg);
+    }
+
+    50% {
+      transform: rotate(4deg);
+    }
+  }
+</style>

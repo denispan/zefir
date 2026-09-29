@@ -1,0 +1,122 @@
+---
+import { Picture } from "astro:assets";
+import type { Product } from "../data/products";
+import { formatPrice } from "../lib/format";
+import { orderMessage, telegramUrl } from "../lib/links";
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const orderUrl = telegramUrl(orderMessage(`${product.name}, ${product.size}`));
+---
+
+<article class="product reveal">
+  <Picture
+    class="product__photo"
+    src={product.photo}
+    alt={product.alt}
+    formats={["avif", "webp"]}
+    widths={[360, 540, 720]}
+    sizes="(min-width: 70rem) 21rem, (min-width: 44rem) 45vw, calc(100vw - 2rem)"
+  />
+  <div class="product__body">
+    <div class="product__title">
+      <h3>{product.name}</h3>
+      <p class="product__size">{product.size}</p>
+    </div>
+    <p class="product__text">{product.description}</p>
+    {product.condition && <p class="product__condition">{product.condition}</p>}
+    <div class="product__footer">
+      <p class="product__price">{formatPrice(product.price)}</p>
+      <a class="product__order" href={orderUrl} target="_blank" rel="noopener">
+        Заказать<span class="visually-hidden">: {product.name}</span>
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .product {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .product :global(picture) {
+    display: block;
+  }
+
+  .product :global(.product__photo) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .product__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.4rem 1.5rem 1.5rem;
+  }
+
+  .product__title {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .product__size {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .product__text {
+    color: var(--ink-soft);
+  }
+
+  .product__condition {
+    align-self: start;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--tint);
+    font-size: 0.85rem;
+  }
+
+  .product__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .product__price {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .product__order {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .product__order::after {
+    content: " →";
+  }
+
+  .product__order:hover {
+    color: var(--accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

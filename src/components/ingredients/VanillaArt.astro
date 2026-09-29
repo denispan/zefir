@@ -1,0 +1,60 @@
+---
+// Два стручка ванили, перевязанные лентой, и цветок ванильной орхидеи, который медленно
+// поворачивается.
+
+const PETAL_TURNS = [0, 72, 144, 216, 288];
+---
+
+<svg viewBox="0 0 120 120" aria-hidden="true">
+  <g fill="none" stroke-linecap="round">
+    <path d="M34 100C50 76 70 54 96 30" stroke="#57371f" stroke-width="8"></path>
+    <path d="M44 106C60 82 78 60 102 38" stroke="#6b4630" stroke-width="8"></path>
+    <path
+      d="M33 98C49 75 69 53 94 30M43 104C59 81 77 59 100 38"
+      stroke="#8f6545"
+      stroke-width="1.6"
+      stroke-dasharray="14 5"
+      opacity="0.85"
+    ></path>
+  </g>
+  <path d="M57 59l21 19" stroke="#d9b27c" stroke-width="4.5" stroke-linecap="round"></path>
+  <path
+    d="M79 79c6-7 13-5 11 1s-9 5-11-1Zm0 0c-2 8-9 10-12 5s3-8 12-5Z"
+    fill="#e8cb9d"
+    stroke="#cfa771"
+    stroke-width="1"
+  ></path>
+  <g transform="translate(34 38)">
+    <g class="orchid">
+      {PETAL_TURNS.map((turn) => (
+        <ellipse
+          rx="6.5"
+          ry="13"
+          cy="-11"
+          transform={`rotate(${turn})`}
+          fill="#fdf3d2"
+          stroke="#ecd592"
+          stroke-width="1"
+        />
+      ))}
+    </g>
+    <circle r="6" fill="#f7d36b"></circle>
+    <circle r="2.6" fill="#ee9b43"></circle>
+  </g>
+</svg>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .orchid {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: turn 24s linear infinite;
+    }
+  }
+
+  @keyframes turn {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+</style>

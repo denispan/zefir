@@ -1,0 +1,38 @@
+---
+import { contacts } from "../data/site";
+import ContactButtons from "./ContactButtons.astro";
+
+const hasMaxLink = contacts.maxProfileUrl !== "";
+---
+
+<section class="section" id="order" aria-labelledby="order-title">
+  <div class="container order">
+    <p class="eyebrow">Заказ</p>
+    <h2 id="order-title">Соберу букет к вашему поводу</h2>
+    <p class="lead">
+      Напишите, для кого подарок и к какому дню он нужен, — подскажу набор и оттенки.
+    </p>
+    <ContactButtons full />
+    {!hasMaxLink && <p class="order__max">Есть и в MAX — по номеру {contacts.phone}.</p>}
+  </div>
+</section>
+
+<style>
+  .order {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+    max-width: 44rem;
+    text-align: center;
+  }
+
+  .order :global(.contact-buttons) {
+    justify-content: center;
+    margin-top: 0.75rem;
+  }
+
+  .order__max {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+</style>

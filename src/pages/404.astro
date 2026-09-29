@@ -1,0 +1,33 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="Страница не найдена | Татьяна — зефирные цветы"
+  description="Такой страницы нет. Наборы зефирных тюльпанов и цены — на главной."
+  noindex
+>
+  <Header />
+  <main class="section">
+    <div class="container missing">
+      <h1>Такой страницы нет</h1>
+      <p class="lead">Зато на главной есть все наборы, цены и контакты.</p>
+      <a class="button button--primary" href="/">
+        На главную
+      </a>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .missing {
+    display: grid;
+    justify-items: start;
+    gap: 1.25rem;
+    min-height: 50vh;
+    align-content: center;
+  }
+</style>

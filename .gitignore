@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.vercel/
+.env
+.env.*
+.DS_Store
+
+# локальные настройки и рабочие копии Claude Code
+.claude/

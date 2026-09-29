@@ -1,0 +1,84 @@
+---
+import { terms } from "../data/site";
+
+const steps = [
+  {
+    title: "Напишите или позвоните",
+    text: "Расскажите, для кого подарок и к какому дню. Помогу выбрать набор и оттенки.",
+  },
+  {
+    title: `Предоплата ${terms.prepayment}`,
+    text: "После неё начинаю готовить ваш заказ.",
+  },
+  {
+    title: `Готовлю ${terms.leadTime}`,
+    text: "Зефиру нужно время на стабилизацию, поэтому заказывайте заранее.",
+  },
+  {
+    title: "Присылаю фото",
+    text: "Покажу готовый набор. Остаток оплаты — перед отправкой или при самовывозе.",
+  },
+];
+---
+
+<section class="section" id="how" aria-labelledby="how-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Как заказать</p>
+      <h2 id="how-title">Четыре шага до подарка</h2>
+    </div>
+    <ol class="steps">
+      {steps.map((step, index) => (
+        <li class="steps__item reveal">
+          <span class="steps__number" aria-hidden="true">
+            {index + 1}
+          </span>
+          <h3>{step.title}</h3>
+          <p>{step.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 1.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .steps__item {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .steps__number {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 0.4rem;
+    border-radius: 50%;
+    background: var(--tint);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  .steps__item h3 {
+    font-size: 1.45rem;
+  }
+
+  .steps__item p {
+    color: var(--ink-soft);
+  }
+</style>

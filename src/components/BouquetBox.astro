@@ -1,0 +1,337 @@
+---
+// Круглая коробка с тюльпанами, вид сверху. При загрузке цветы слетаются в коробку,
+// потом коробка медленно вращается. Анимации — только CSS, без JavaScript.
+
+type Shade = "pink" | "peach" | "yellow" | "lilac" | "white";
+
+interface Bloom {
+  x: number;
+  y: number;
+  scale: number;
+  turn: number;
+  shade: Shade;
+  delay: number;
+  fromX: number;
+  fromY: number;
+}
+
+interface Leaf {
+  x: number;
+  y: number;
+  angle: number;
+  delay: number;
+}
+
+const OUTER: Shade[] = [
+  "pink",
+  "white",
+  "peach",
+  "pink",
+  "lilac",
+  "white",
+  "pink",
+  "yellow",
+  "white",
+  "pink",
+  "peach",
+];
+const INNER: Shade[] = ["lilac", "pink", "yellow", "white", "peach", "pink"];
+const FLY_DISTANCE = 360;
+
+// Лепесток острым кончиком вверх; из шести таких складывается тюльпан, если смотреть сверху.
+const PETAL = "M0 0C11-5 18-14 17-24 16-32 9-38 0-42-9-38-16-32-17-24-18-14-11-5 0 0Z";
+const RIDGES = "M-6-7Q-9-19-5-33M0-6V-37M6-7Q9-19 5-33";
+const OUTER_TURNS = [0, 120, 240];
+const INNER_TURNS = [60, 180, 300];
+const LEAF_STEP_MS = 30;
+const BLOOM_STEP_MS = 60;
+const FIRST_BLOOM_MS = 250;
+
+const round = (value: number) => Math.round(value * 10) / 10;
+
+function polar(radius: number, degrees: number) {
+  const radians = (degrees * Math.PI) / 180;
+  return { x: round(Math.cos(radians) * radius), y: round(Math.sin(radians) * radius) };
+}
+
+function ring(radius: number, shades: Shade[], offset: number, scale: number, firstDelay: number) {
+  const step = 360 / shades.length;
+  return shades.map((shade, index): Bloom => {
+    const angle = offset + step * index;
+    const at = polar(radius, angle);
+    const from = polar(FLY_DISTANCE - radius, angle);
+    return {
+      ...at,
+      scale,
+      turn: (index * 53) % 120,
+      shade,
+      delay: firstDelay + index * BLOOM_STEP_MS,
+      fromX: from.x,
+      fromY: from.y,
+    };
+  });
+}
+
+const innerStart = FIRST_BLOOM_MS + OUTER.length * BLOOM_STEP_MS;
+const centerStart = innerStart + INNER.length * BLOOM_STEP_MS;
+
+const blooms: Bloom[] = [
+  ...ring(127, OUTER, -90, 1, FIRST_BLOOM_MS),
+  ...ring(63, INNER, -60, 0.96, innerStart),
+  {
+    x: 0,
+    y: 0,
+    scale: 1.02,
+    turn: 30,
+    shade: "pink",
+    delay: centerStart,
+    fromX: 0,
+    fromY: -FLY_DISTANCE,
+  },
+];
+
+const leaves: Leaf[] = OUTER.map((_, index) => {
+  const angle = -90 + (360 / OUTER.length) * (index + 0.5);
+  return { ...polar(130, angle), angle: round(angle + 90), delay: index * LEAF_STEP_MS };
+});
+
+const creases = Array.from({ length: 16 }, (_, index) => {
+  const angle = index * 22.5 + (index % 3) * 6;
+  const start = polar(166, angle);
+  const bend = polar(178, angle + 5);
+  const end = polar(170, angle + 11);
+  return `M${start.x} ${start.y}Q${bend.x} ${bend.y} ${end.x} ${end.y}`;
+});
+
+const bloomStyle = (bloom: Bloom) =>
+  `--dx:${bloom.fromX}px;--dy:${bloom.fromY}px;--delay:${bloom.delay}ms`;
+const bloomTransform = (bloom: Bloom) =>
+  `translate(${bloom.x} ${bloom.y}) rotate(${bloom.turn}) scale(${bloom.scale})`;
+---
+
+<div class="bouquet">
+  <svg class="bouquet__art" viewBox="-200 -200 400 400" role="img" aria-labelledby="bouquet-title">
+    <title id="bouquet-title">Круглая коробка с зефирными тюльпанами, вид сверху</title>
+    <defs>
+      <linearGradient id="petal-pink" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0.3" stop-color="#fff8f7"></stop>
+        <stop offset="1" stop-color="#f0a3b6"></stop>
+      </linearGradient>
+      <linearGradient id="petal-peach" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0.3" stop-color="#fff6ee"></stop>
+        <stop offset="1" stop-color="#f6b995"></stop>
+      </linearGradient>
+      <linearGradient id="petal-yellow" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0.3" stop-color="#fffae6"></stop>
+        <stop offset="1" stop-color="#f4d37a"></stop>
+      </linearGradient>
+      <linearGradient id="petal-lilac" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0.3" stop-color="#faf4fb"></stop>
+        <stop offset="1" stop-color="#c9aadb"></stop>
+      </linearGradient>
+      <linearGradient id="petal-white" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0.3" stop-color="#ffffff"></stop>
+        <stop offset="1" stop-color="#efe6dc"></stop>
+      </linearGradient>
+      <g id="tulip-top">
+        {INNER_TURNS.map((turn) => (
+          <path class="t-petal t-petal--inner" transform={`rotate(${turn}) scale(.84)`} d={PETAL} />
+        ))}
+        {OUTER_TURNS.map((turn) => (
+          <path class="t-petal" transform={`rotate(${turn})`} d={PETAL} />
+        ))}
+        {OUTER_TURNS.map((turn) => (
+          <path class="t-ridge" transform={`rotate(${turn})`} d={RIDGES} />
+        ))}
+        <circle class="t-core" r="5"></circle>
+        <circle class="t-shine" cx="-1.5" cy="-2" r="1.6"></circle>
+      </g>
+      <g id="leaf-top">
+        <path class="l-blade" d="M0 0C10-12 11-31 0-48-11-31-10-12 0 0Z"></path>
+        <path class="l-vein" d="M0-5V-42"></path>
+      </g>
+    </defs>
+
+    <circle class="box" r="197"></circle>
+    <circle class="box__wall" r="188"></circle>
+    <circle class="tissue" r="182"></circle>
+    <path class="tissue__crease" d={creases.join("")}></path>
+
+    <g class="leaves">
+      {leaves.map((leaf) => (
+        <g class="leaf" style={`--delay:${leaf.delay}ms`}>
+          <use
+            href="#leaf-top"
+            transform={`translate(${leaf.x} ${leaf.y}) rotate(${leaf.angle})`}
+          />
+        </g>
+      ))}
+    </g>
+    <g class="blooms">
+      {blooms.map((bloom) => (
+        <g class="bloom" style={bloomStyle(bloom)}>
+          <use href="#tulip-top" class={`shade-${bloom.shade}`} transform={bloomTransform(bloom)} />
+        </g>
+      ))}
+    </g>
+  </svg>
+</div>
+
+<style>
+  .bouquet {
+    aspect-ratio: 1;
+    width: min(100%, 30rem);
+    margin-inline: auto;
+    border-radius: 50%;
+    box-shadow:
+      0 30px 60px -30px rgb(58 46 42 / 35%),
+      0 8px 20px -12px rgb(58 46 42 / 20%);
+  }
+
+  .bouquet__art {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .box {
+    fill: #fffdfb;
+    stroke: #eadfd6;
+    stroke-width: 1.5;
+  }
+
+  .box__wall {
+    fill: none;
+    stroke: #f3ebe4;
+    stroke-width: 9;
+  }
+
+  .tissue {
+    fill: #f5e8ef;
+  }
+
+  .tissue__crease {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    opacity: 0.7;
+  }
+
+  .l-blade {
+    fill: #a9bea1;
+    stroke: #93aa8b;
+    stroke-width: 1;
+  }
+
+  .l-vein {
+    fill: none;
+    stroke: #c9d8c1;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+  }
+
+  .t-petal {
+    fill: var(--petal);
+    stroke: var(--edge);
+    stroke-width: 1.3;
+  }
+
+  .t-petal--inner {
+    stroke-width: 1.5;
+  }
+
+  .t-ridge {
+    fill: none;
+    stroke: var(--ridge);
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    opacity: 0.75;
+  }
+
+  .t-core {
+    fill: var(--core);
+  }
+
+  .t-shine {
+    fill: #fff;
+    opacity: 0.7;
+  }
+
+  .shade-pink {
+    --petal: url("#petal-pink");
+    --edge: #e391a6;
+    --ridge: #efb2c1;
+    --core: #f3b4c4;
+  }
+
+  .shade-peach {
+    --petal: url("#petal-peach");
+    --edge: #e9a27f;
+    --ridge: #f4c4a8;
+    --core: #f29a64;
+  }
+
+  .shade-yellow {
+    --petal: url("#petal-yellow");
+    --edge: #e6bf55;
+    --ridge: #f1d88e;
+    --core: #f0a33d;
+  }
+
+  .shade-lilac {
+    --petal: url("#petal-lilac");
+    --edge: #b294c7;
+    --ridge: #d3bde0;
+    --core: #9b6fb6;
+  }
+
+  .shade-white {
+    --petal: url("#petal-white");
+    --edge: #ddd1c4;
+    --ridge: #ebe2d8;
+    --core: #cfe0c4;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bouquet__art {
+      animation: spin 120s linear infinite;
+    }
+
+    .leaf,
+    .bloom {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: fly-in 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.15) var(--delay) both;
+    }
+
+    .leaf {
+      animation-name: sprout;
+      animation-duration: 0.6s;
+    }
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @keyframes fly-in {
+    from {
+      opacity: 0;
+      transform: translate(var(--dx), var(--dy)) rotate(-120deg) scale(0.4);
+    }
+
+    35% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes sprout {
+    from {
+      opacity: 0;
+      transform: scale(0.2);
+    }
+  }
+</style>

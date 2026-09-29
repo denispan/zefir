@@ -1,0 +1,63 @@
+---
+// Буквенная аватарка вместо фото покупателя, как у Авито для профилей без фото.
+// Цвет выбирается по номеру отзыва, чтобы соседние аватарки с одной буквой отличались.
+
+interface Props {
+  name: string;
+  index: number;
+}
+
+const TONES = ["rose", "peach", "lilac", "sage", "butter", "sky"];
+
+const { name, index } = Astro.props;
+const tone = TONES[index % TONES.length] ?? "rose";
+---
+
+<span class:list={["avatar", `avatar--${tone}`]} aria-hidden="true">
+  {name.charAt(0)}
+</span>
+
+<style>
+  .avatar {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .avatar--rose {
+    background: #f6dbe2;
+    color: #9c3f58;
+  }
+
+  .avatar--peach {
+    background: #fbe4d5;
+    color: #a9582f;
+  }
+
+  .avatar--lilac {
+    background: #ebe0f4;
+    color: #72558e;
+  }
+
+  .avatar--sage {
+    background: #e2ebdc;
+    color: #4f6a48;
+  }
+
+  .avatar--butter {
+    background: #f7ecca;
+    color: #7f621c;
+  }
+
+  .avatar--sky {
+    background: #e0e9ef;
+    color: #46657a;
+  }
+</style>

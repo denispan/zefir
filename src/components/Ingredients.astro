@@ -1,0 +1,122 @@
+---
+// Ингредиенты из состава картинками. При прокрутке они по очереди выпрыгивают,
+// потом слегка покачиваются. Где нет scroll-driven animations, просто стоят на месте.
+import AgarArt from "./ingredients/AgarArt.astro";
+import AppleArt from "./ingredients/AppleArt.astro";
+import ChocolateArt from "./ingredients/ChocolateArt.astro";
+import SugarArt from "./ingredients/SugarArt.astro";
+import VanillaArt from "./ingredients/VanillaArt.astro";
+
+const ingredients = [
+  { name: "Яблочное пюре", note: "основа, а не сок", tone: "#fbe4e6", Art: AppleArt },
+  { name: "Сахар", note: "и инвертный сироп", tone: "#ece5f3", Art: SugarArt },
+  { name: "Агар-агар", note: "загуститель из водорослей", tone: "#e3eee5", Art: AgarArt },
+  { name: "Ванилин", note: "для аромата", tone: "#f8eed2", Art: VanillaArt },
+  { name: "Молочный шоколад", note: "глазурь для грибочков", tone: "#f7e5d8", Art: ChocolateArt },
+];
+
+const STEP = 4;
+const LENGTH = 18;
+const FIRST = 6;
+---
+
+<ul class="ingredients" aria-label="Из чего сделан зефир">
+  {ingredients.map(({ name, note, tone, Art }, index) => {
+    const from = FIRST + index * STEP;
+    const style = `--tone:${tone};--from:${from}%;--to:${from + LENGTH}%;--bob-delay:${index * -1.3}s`;
+    return (
+      <li class="ingredient" style={style}>
+        <span class="ingredient__badge">
+          <Art />
+        </span>
+        <span class="ingredient__name">{name}</span>
+        <span class="ingredient__note">{note}</span>
+      </li>
+    );
+  })}
+</ul>
+
+<style>
+  .ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.75rem 1rem;
+    margin: 0 0 clamp(2.5rem, 6vw, 3.5rem);
+    padding: 0;
+    list-style: none;
+    view-timeline: --ingredients block;
+  }
+
+  .ingredient {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 0.35rem;
+    width: clamp(6.3rem, 16vw, 10rem);
+    text-align: center;
+  }
+
+  .ingredient__badge {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 1;
+    margin-bottom: 0.4rem;
+    border-radius: 50%;
+    background: var(--tone);
+    box-shadow: 0 14px 30px -18px rgb(58 46 42 / 40%);
+  }
+
+  .ingredient__badge :global(svg) {
+    width: 80%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .ingredient__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 2.4vw, 1.3rem);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  .ingredient__note {
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.35;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ingredient__badge {
+      animation: bob 6s ease-in-out var(--bob-delay) infinite;
+    }
+  }
+
+  /* Появление по прокрутке. Только длинные свойства: сокращённое animation
+     сбрасывает animation-timeline (см. global.css). */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .ingredient {
+        animation-name: pop-in;
+        animation-timing-function: cubic-bezier(0.2, 0.9, 0.3, 1.25);
+        animation-fill-mode: both;
+        animation-timeline: --ingredients;
+        animation-range: cover var(--from) cover var(--to);
+      }
+    }
+  }
+
+  @keyframes bob {
+    50% {
+      transform: translateY(-6px) rotate(-2deg);
+    }
+  }
+
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(2.5rem) scale(0.6) rotate(-8deg);
+    }
+  }
+</style>
