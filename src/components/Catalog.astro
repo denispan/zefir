@@ -5,7 +5,7 @@ import ProductCard from "./ProductCard.astro";
 
 <section class="section" id="catalog" aria-labelledby="catalog-title">
   <div class="container">
-    <div class="section-head section-head--center">
+    <div class="section-head section-head--center reveal">
       <p class="eyebrow">Наборы и цены</p>
       <h2 id="catalog-title">Выберите коробку — цвета подберём вместе</h2>
       <p class="lead">
@@ -30,5 +30,27 @@ import ProductCard from "./ProductCard.astro";
 
   .catalog > :global(*) {
     flex: 0 1 21rem;
+  }
+
+  /* Карточки одного ряда появляются каскадом слева направо: вторая и третья чуть позже первой.
+     Границы — по ширине, при которой в ряд помещаются две и три карточки. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      @media (width >= 48rem) and (width < 71rem) {
+        .catalog > :global(:nth-child(2n)) {
+          animation-range: entry 8% cover 30%;
+        }
+      }
+
+      @media (width >= 71rem) {
+        .catalog > :global(:nth-child(3n + 2)) {
+          animation-range: entry 8% cover 30%;
+        }
+
+        .catalog > :global(:nth-child(3n + 3)) {
+          animation-range: entry 16% cover 38%;
+        }
+      }
+    }
   }
 </style>

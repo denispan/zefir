@@ -51,6 +51,24 @@ import { telegramUrl } from "../lib/links";
     background: var(--bg);
   }
 
+  /* После начала прокрутки у шапки появляется тень — видно, что она плывёт над страницей.
+     Только длинные свойства: сокращённое animation сбрасывает animation-timeline. */
+  @supports (animation-timeline: scroll()) {
+    .header {
+      animation-name: header-lift;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll();
+      animation-range: 0px 6rem;
+    }
+  }
+
+  @keyframes header-lift {
+    to {
+      box-shadow: 0 10px 24px -18px rgb(58 46 42 / 35%);
+    }
+  }
+
   .header__inner {
     display: flex;
     align-items: center;
@@ -69,6 +87,11 @@ import { telegramUrl } from "../lib/links";
   .brand__mark {
     width: 2rem;
     height: 2rem;
+    transition: transform 0.3s ease;
+  }
+
+  .brand:hover .brand__mark {
+    transform: rotate(-10deg);
   }
 
   .brand__text {
@@ -96,12 +119,30 @@ import { telegramUrl } from "../lib/links";
   }
 
   .nav a {
+    position: relative;
     color: var(--ink-soft);
     text-decoration: none;
   }
 
   .nav a:hover {
     color: var(--ink);
+  }
+
+  /* Подчёркивание вырастает слева направо при наведении. */
+  .nav a::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -0.35em;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+
+  .nav a:hover::after,
+  .nav a:focus-visible::after {
+    transform: scaleX(1);
   }
 
   .header__cta {

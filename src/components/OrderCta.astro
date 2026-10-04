@@ -1,12 +1,58 @@
 ---
+// Финальный блок с контактами. По краям — лепестки, которые медленно покачиваются;
+// на телефоне остаются только те, что над текстом и под ним, чтобы не лезть на него.
 import { contacts } from "../data/site";
 import ContactButtons from "./ContactButtons.astro";
+
+interface Petal {
+  /** Положение в процентах от ширины и высоты блока. */
+  x: number;
+  y: number;
+  /** Ширина, rem. */
+  size: number;
+  /** Наклон, градусы. */
+  turn: number;
+  fill: string;
+  /** Период покачивания, с, и сдвиг фазы, чтобы лепестки не качались синхронно. */
+  duration: number;
+  delay: number;
+  /** Только на широких экранах — на телефоне край блока слишком близко к тексту. */
+  wideOnly?: boolean;
+}
+
+// Тот же лепесток, что в букете на первом экране, остриём вверх.
+const PETAL = "M0 0C11-5 18-14 17-24 16-32 9-38 0-42-9-38-16-32-17-24-18-14-11-5 0 0Z";
+
+const petals: Petal[] = [
+  { x: 6, y: 18, size: 2.2, turn: -30, fill: "#f6c6d2", duration: 9, delay: 0, wideOnly: true },
+  { x: 14, y: 70, size: 1.6, turn: 25, fill: "#dcc6e8", duration: 11, delay: -4, wideOnly: true },
+  { x: 86, y: 22, size: 1.8, turn: 40, fill: "#f9cfb3", duration: 10, delay: -2, wideOnly: true },
+  { x: 92, y: 68, size: 2.4, turn: -15, fill: "#f6c6d2", duration: 12, delay: -7, wideOnly: true },
+  { x: 30, y: 5, size: 1.3, turn: 60, fill: "#f8e2a0", duration: 8, delay: -1 },
+  { x: 66, y: 7, size: 1.5, turn: -50, fill: "#dcc6e8", duration: 9.5, delay: -5 },
+  { x: 24, y: 90, size: 1.4, turn: 15, fill: "#f9cfb3", duration: 10.5, delay: -3 },
+  { x: 72, y: 88, size: 1.2, turn: -70, fill: "#f6c6d2", duration: 8.5, delay: -6 },
+];
+
+const petalStyle = (petal: Petal) =>
+  `--x:${petal.x}%;--y:${petal.y}%;--size:${petal.size}rem;--turn:${petal.turn}deg;--duration:${petal.duration}s;--delay:${petal.delay}s`;
 
 const hasMaxLink = contacts.maxProfileUrl !== "";
 ---
 
-<section class="section" id="order" aria-labelledby="order-title">
-  <div class="container order">
+<section class="section order-section" id="order" aria-labelledby="order-title">
+  <div class="petals" aria-hidden="true">
+    {petals.map((petal) => (
+      <svg
+        class:list={["petal", { "petal--wide": petal.wideOnly }]}
+        viewBox="-20 -45 40 48"
+        style={petalStyle(petal)}
+      >
+        <path d={PETAL} fill={petal.fill} />
+      </svg>
+    ))}
+  </div>
+  <div class="container order reveal">
     <p class="eyebrow">Контакты</p>
     <h2 id="order-title">Соберу букет к вашему празднику</h2>
     <p class="lead">
@@ -18,7 +64,58 @@ const hasMaxLink = contacts.maxProfileUrl !== "";
 </section>
 
 <style>
+  .order-section {
+    position: relative;
+    background: radial-gradient(40rem 22rem at 50% 55%, rgb(229 154 174 / 12%), transparent 70%);
+  }
+
+  .petals {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .petal {
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    width: var(--size);
+    height: auto;
+    rotate: var(--turn);
+    opacity: 0.75;
+  }
+
+  .petal--wide {
+    display: none;
+  }
+
+  @media (width >= 48rem) {
+    .petal--wide {
+      display: block;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .petal {
+      animation: float var(--duration) ease-in-out var(--delay) infinite alternate;
+    }
+  }
+
+  @keyframes float {
+    from {
+      translate: 0 -0.4rem;
+      rotate: calc(var(--turn) - 5deg);
+    }
+
+    to {
+      translate: 0 0.5rem;
+      rotate: calc(var(--turn) + 5deg);
+    }
+  }
+
   .order {
+    position: relative;
     display: grid;
     justify-items: center;
     gap: 1.1rem;

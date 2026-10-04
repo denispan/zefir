@@ -5,7 +5,7 @@ import Ingredients from "./Ingredients.astro";
 
 <section class="section" id="composition" aria-labelledby="composition-title">
   <div class="container">
-    <div class="section-head">
+    <div class="section-head reveal">
       <p class="eyebrow">Состав и хранение</p>
       <h2 id="composition-title">Из чего сделан зефир</h2>
     </div>
@@ -50,5 +50,16 @@ import Ingredients from "./Ingredients.astro";
   .facts__note {
     color: var(--ink-soft);
     font-size: 0.95rem;
+  }
+
+  /* Когда карточки стоят рядом, правая появляется чуть позже левой. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      @media (width >= 46rem) {
+        .facts__card:nth-child(2) {
+          animation-range: entry 8% cover 30%;
+        }
+      }
+    }
   }
 </style>

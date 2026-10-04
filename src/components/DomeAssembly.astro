@@ -110,6 +110,11 @@ const timing = (part: Part) => `--from:${part.from}%;--to:${part.to}%`;
     <path class="plate-side" d="M70 404v16a140 26 0 0 0 280 0v-16Z"></path>
     <ellipse class="plate-top" cx="210" cy="404" rx="140" ry="26"></ellipse>
 
+    {/* Задняя дуга ободка — под цветами, но опускается вместе с куполом. */}
+    <g class="part part--dome" style="--from:34%;--to:45%">
+      <path class="dome__rim" d="M80 404A130 22 0 0 1 340 404"></path>
+    </g>
+
     {leaves.map((leaf) => (
       <g class="part part--leaf" style={timing(leaf)}>
         <use href="#leaf-side" transform={leafTransform(leaf)} />
@@ -130,7 +135,7 @@ const timing = (part: Part) => `--from:${part.from}%;--to:${part.to}%`;
 
     <g class="part part--dome" style="--from:34%;--to:45%">
       <path class="dome" d="M80 404V262C80 192 138 146 210 146S340 192 340 262V404"></path>
-      <ellipse class="dome__rim" cx="210" cy="404" rx="130" ry="22"></ellipse>
+      <path class="dome__rim" d="M80 404A130 22 0 0 0 340 404"></path>
       <path class="dome__shine" d="M104 386V270C104 218 128 186 162 170"></path>
       <path class="dome__shine dome__shine--thin" d="M318 300C318 262 310 236 296 216"></path>
     </g>

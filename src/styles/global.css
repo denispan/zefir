@@ -163,6 +163,7 @@ main > :nth-child(even) {
   transition:
     background-color 0.2s,
     border-color 0.2s,
+    box-shadow 0.25s,
     transform 0.2s;
 }
 
@@ -174,6 +175,11 @@ main > :nth-child(even) {
   flex: none;
   width: 1.25rem;
   height: 1.25rem;
+  transition: transform 0.25s ease;
+}
+
+.button:hover svg {
+  transform: scale(1.12);
 }
 
 .button--primary {
@@ -183,6 +189,7 @@ main > :nth-child(even) {
 
 .button--primary:hover {
   background: var(--accent-strong);
+  box-shadow: 0 12px 24px -14px rgb(168 69 94 / 60%);
 }
 
 .button--ghost {
@@ -193,6 +200,7 @@ main > :nth-child(even) {
 
 .button--ghost:hover {
   border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  box-shadow: 0 12px 24px -18px rgb(58 46 42 / 35%);
 }
 
 .visually-hidden {
@@ -222,5 +230,29 @@ main > :nth-child(even) {
   from {
     opacity: 0;
     transform: translateY(1.75rem);
+  }
+}
+
+/* Лёгкий параллакс: фото чуть крупнее своей рамки и медленно плывёт, пока карточка едет по экрану.
+   Класс ставится на <picture>, лишнее обрезает карточка (overflow: hidden). */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax {
+      animation-name: photo-drift;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+@keyframes photo-drift {
+  from {
+    transform: translateY(-3%) scale(1.07);
+  }
+
+  to {
+    transform: translateY(3%) scale(1.07);
   }
 }

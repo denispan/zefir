@@ -26,7 +26,7 @@ const options = [
 <section class="section" id="delivery" aria-labelledby="delivery-title">
   <div class="container delivery">
     <div>
-      <div class="section-head">
+      <div class="section-head reveal">
         <p class="eyebrow">Заказ и доставка</p>
         <h2 id="delivery-title">Заберите сами или привезу</h2>
         <p class="lead">
@@ -36,7 +36,7 @@ const options = [
       </div>
       <ul class="options">
         {options.map((option) => (
-          <li class="options__row">
+          <li class="options__row reveal">
             <div>
               <h3>{option.title}</h3>
               <p>{option.note}</p>
@@ -45,21 +45,24 @@ const options = [
           </li>
         ))}
       </ul>
-      <p class="payment">
+      <p class="payment reveal">
         Прошу предоплату {terms.prepayment} — после неё начинаю готовить. Готовый набор
         сфотографирую и пришлю вам. Остаток можно оплатить перед отправкой или при самовывозе.
       </p>
     </div>
 
     <aside class="bulk reveal" aria-labelledby="bulk-title">
-      <Picture
-        class="bulk__photo"
-        src={roundBoxesSix}
-        alt="Шесть круглых коробок с разноцветными зефирными тюльпанами"
-        formats={["avif", "webp"]}
-        widths={[360, 540, 630]}
-        sizes="(min-width: 56rem) 26rem, calc(100vw - 2rem)"
-      />
+      <div class="bulk__frame">
+        <Picture
+          class="bulk__photo"
+          pictureAttributes={{ class: "parallax" }}
+          src={roundBoxesSix}
+          alt="Шесть круглых коробок с разноцветными зефирными тюльпанами"
+          formats={["avif", "webp"]}
+          widths={[360, 540, 630]}
+          sizes="(min-width: 56rem) 26rem, calc(100vw - 2rem)"
+        />
+      </div>
       <div class="bulk__body">
         <h3 id="bulk-title">
           От {terms.bulkBoxes} коробок — скидка {terms.bulkDiscount}
@@ -116,10 +119,17 @@ const options = [
   }
 
   .bulk {
+    /* isolation — чтобы Safari обрезал плывущее фото по скруглённым углам. */
+    isolation: isolate;
     overflow: hidden;
     border-radius: var(--radius-lg);
     background: var(--surface);
     box-shadow: var(--shadow);
+  }
+
+  /* Рамка обрезает фото, чтобы параллакс не вылезал на текст под ним. */
+  .bulk__frame {
+    overflow: hidden;
   }
 
   .bulk :global(picture) {

@@ -1,8 +1,13 @@
 const rubles = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
 
+/** «1 500» — только число, когда знак валюты нужно оформить отдельно. */
+export function formatRubles(value: number): string {
+  return rubles.format(value);
+}
+
 /** «1 500 ₽» с неразрывными пробелами, чтобы цена не переносилась. */
 export function formatPrice(value: number): string {
-  return `${rubles.format(value)}\u00A0₽`;
+  return `${formatRubles(value)}\u00A0₽`;
 }
 
 const longDate = new Intl.DateTimeFormat("ru-RU", {

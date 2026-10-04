@@ -12,7 +12,7 @@ const avitoUrl = contacts.avitoProfileUrl;
 
 <section class="section" id="reviews" aria-labelledby="reviews-title">
   <div class="container">
-    <div class="section-head section-head--center">
+    <div class="section-head section-head--center reveal">
       <p class="eyebrow">Отзывы</p>
       <h2 id="reviews-title">Что пишут после заказа</h2>
       <p class="lead">
@@ -142,6 +142,27 @@ const avitoUrl = contacts.avitoProfileUrl;
 
     .review:last-child:nth-child(3n + 2) {
       grid-column: span 2;
+    }
+  }
+
+  /* Отзывы одного ряда появляются каскадом слева направо. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      @media (width >= 36rem) and (width < 64rem) {
+        .review:nth-child(2n) {
+          animation-range: entry 8% cover 30%;
+        }
+      }
+
+      @media (width >= 64rem) {
+        .review:nth-child(3n + 2) {
+          animation-range: entry 8% cover 30%;
+        }
+
+        .review:nth-child(3n + 3) {
+          animation-range: entry 16% cover 38%;
+        }
+      }
     }
   }
 

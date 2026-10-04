@@ -47,6 +47,10 @@ const lowestPrice = Math.min(...products.map((product) => product.price));
     padding-block: clamp(2rem, 6vw, 5rem) clamp(4rem, 9vw, 6.5rem);
     /* Цветы влетают из-за края, а вращающаяся коробка шире своего блока — прячем это, без полосы прокрутки. */
     overflow-x: clip;
+    /* Мягкие цветные пятна: розовое за коробкой, зелёное у нижнего левого края. */
+    background:
+      radial-gradient(42rem 30rem at 80% 45%, rgb(229 154 174 / 16%), transparent 70%),
+      radial-gradient(28rem 20rem at 6% 96%, rgb(159 180 154 / 18%), transparent 70%);
   }
 
   .hero__inner {
@@ -92,6 +96,40 @@ const lowestPrice = Math.min(...products.map((product) => product.price));
 
   .hero__facts strong {
     color: var(--ink);
+  }
+
+  /* Текст появляется строка за строкой, пока в коробку слетаются цветы. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__text > :global(*) {
+      animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+
+    .hero__text > :global(:nth-child(2)) {
+      animation-delay: 0.05s;
+    }
+
+    .hero__text > :global(:nth-child(3)) {
+      animation-delay: 0.1s;
+    }
+
+    .hero__text > :global(:nth-child(4)) {
+      animation-delay: 0.2s;
+    }
+
+    .hero__text > :global(:nth-child(5)) {
+      animation-delay: 0.3s;
+    }
+
+    .hero__text > :global(:nth-child(6)) {
+      animation-delay: 0.4s;
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.9rem);
+    }
   }
 
   @media (width >= 56rem) {
